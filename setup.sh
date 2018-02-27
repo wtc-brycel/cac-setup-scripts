@@ -84,6 +84,7 @@ if [ ! -f .kernel_remove_ready ]; then
 	echo -e $Green"basic information"$Color_Off
 	echo "=========================================="
 	echo
+	tput bel
 	echo -e $Yellow"machine name [ubuntu]:"$Color_Off
 	read machine_name
 
@@ -95,14 +96,18 @@ if [ ! -f .kernel_remove_ready ]; then
 	sed -i s/ubuntu/$machine_name/ /etc/hostname
 	hostname $machine_name
 
+	tput bel
 	echo -e $Yellow"new password for "$Red"root:"$Color_Off
 	read -s new_root_password
 	
 	echo "changing root password"
 	echo "root:$new_root_password" | chpasswd
 	
+	tput bel
 	echo -e $Yellow"username:"$Color_Off
 	read new_account
+	
+	tput bel
 	echo -e $Yellow"password for new user:"$Color_Off
 	read -s new_account_password
 
@@ -125,6 +130,7 @@ if [ ! -f .kernel_remove_ready ]; then
 	upgrade_machine
 
 	touch .kernel_remove_ready
+	tput bel
 	echo -e $Yellow"press any key to "$Red"reboot machine"$Red", then "$Purple"rerun this script"$Yellow" after rebooting"$Color_Off
 	read confirm_key
 	reboot -h now
@@ -149,6 +155,7 @@ if [ ! -f .release_upgrade_done ]; then
 	do-release-upgrade
 
 	touch .release_upgrade_done
+	tput bel
 	echo -e $Yellow"press any key to reboot machine, rerun script after rebooting"$Color_Off
 	read confirm_key
 	reboot -h now
@@ -189,6 +196,7 @@ echo
 echo "disabling root login..."
 sed -i "s/PermitRootLogin yes/PermitRootLogin no/" /etc/ssh/sshd_config
 
+tput bel
 echo -e $Yellow"new ssh port [22]:"$Color_Off
 read ssh_port
 
@@ -210,11 +218,13 @@ echo "=========================================="
 echo -e $Green"Configuring firewall..."$Color_Off
 echo "=========================================="
 echo
+tput bel
 echo -e $Yellow"administrative network or host with netmask (1.2.3.4/32):"$Color_Off	# Network or host we'll allow to SSH in.
 read administrative_network
 
 while [[ "$administrative_network" == "" ]] 											# While input empty
 do
+tput bel
 	echo -e $Red"(ERROR) Enter a valid network or host."$Color_off						# Ask the user to enter a valid string
     read administrative_network															# Get input again
 done
@@ -224,6 +234,7 @@ echo -e $White"ufw allow from "$Cyan"$administrative_network "$White"to any port
 ufw allow from $administrative_network to any port $ssh_port
 
 echo "enabling firewall..."
+tput bel
 echo -e $Red"CONFIRM CORRECT "$Purple"ADMINISTRATIVE NETWORK "$Red"BELOW."$Color_Off
 ufw enable
 
@@ -233,6 +244,7 @@ echo "=========================================="
 echo -e $Green"System is Ready"$Color_Off
 echo "=========================================="
 echo
+tput bel
 echo -e $Yellow"press any key to reboot"$Color_Off
 read confirm_key
 reboot -h now
